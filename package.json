@@ -1,0 +1,50 @@
+{
+  "name": "base-vite",
+  "version": "1.0.0",
+  "main": "./dist/main.js",
+  "license": "MIT",
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "colors": "^1.4.0",
+    "express": "^4.18.2",
+    "pkg": "^5.8.1",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/colors": "^1.2.1",
+    "@types/express": "^4.17.17",
+    "@types/fs-extra": "^11.0.1",
+    "@types/typescript": "^2.0.0",
+    "@types/ws": "^8.5.5",
+    "copy": "^0.3.2",
+    "fs-extra": "^11.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  },
+  "scripts": {
+    "build": "yarn build:front && yarn build:back",
+    "build:front": "cd frontend && yarn build",
+    "build:back": "ts-node deleteFolder.ts ./dist && tsc && ts-node moveFrontFiles.ts",
+    "package": "yarn package:macos & yarn package:windows",
+    "package:macos": "pkg . -t node18-macos-arm64 -o ./build/$npm_package_version/$npm_package_name-$npm_package_version --icon ./app.icns",
+    "package:windows": "pkg . -t node18-windows-x64 -o ./build/$npm_package_version/$npm_package_name-$npm_package_version --icon ./app.ico",
+    "package:linux": "",
+    "prestart": "yarn build",
+    "start": "node ./dist/main.js"
+  },
+  "bin": "./dist/main.js",
+  "pkg": {
+    "scripts": "./dist/**/*.js",
+    "assets": "./dist/static/**/*",
+    "targets": [
+      "node18-macos-arm64",
+      "node18-windows-x64"
+    ],
+    "icon": {
+      "mac": "./app.icns"
+    },
+    "output": {
+      "macos": "./build/$npm_package_version/$npm_package_name-$npm_package_version"
+    }
+  }
+}
